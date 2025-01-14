@@ -61,6 +61,17 @@ BrainHack Vanderbilt Discord channel.
 
 ## Data
 Paired EEG and fMRI spectrograms are generated from part of the internal dataset of [Neurdylab](https://www.cchanglab.net/home). 
+The generated spectrograms and ground truth is released at [OSF](https://osf.io/hxaz4/) with DOI: Identifier: DOI 10.17605/OSF.IO/HXAZ4.
+
+**Base folder:** *data/SampleData/*
+
+**EEG spectrograms:** path: *data/SampleData/eeg_spectrograms*. Every EEG scan has a corresponding spectrogram.
+
+**fMRI spectrograms:** path: *data/SampleData/fmri_spectrograms*. Every fMRI scan has spectrograms regarding to 64 ROIs from the 
+
+**Brain vigilance state ground truth:** path: *data/SampleData/vigall_out*. 
+Binary groundtruth is generated in a sliding-window manner with window size 30, step size 15. 1: vigilance; 0: drowsy.
+
 
 ## Number of Collaborators and Credits
 3 Collaborators. Collaborators contributing to method design/experiments/visualizations/writings will become coauthors in follow-up publications.
@@ -68,11 +79,12 @@ Paired EEG and fMRI spectrograms are generated from part of the internal dataset
 ## Metadata
 1. Computational Resources: The codebase is implemented in both the CPU and GPU versions. Change the arguments in the running scripts for switching computational devices. Sample data size: < 61M. Memory usage in training: 3000MiB.
 2. Code Implementation: The pipeline is implemented following [1][2][3].
-3. Data Preparation: EEG spectrograms are generated following the work of [4], and fMRI spectrograms are generated following the work of [5]. Brain states ground truth is computed via the VIGALL algorithm [6]. Ground truth label in dataloader: eeg_index.
+3. Data Preparation: EEG spectrograms are generated following the work of [4], and fMRI spectrograms are generated following the work of [5]. fMRI ROIs are extracted based on the Dictionaries of Functional
+Modes atlas [6]. Brain states ground truth is computed via the VIGALL algorithm [7]. Ground truth label in dataloader: eeg_index. 
 
 
 ## Environment Configs, Training and Testing the Model, Visualization
-**Step 0:** Open a terminal and enter the working folder.
+**Step 0:** Download the data and change the data loading path. Open a terminal and enter the working folder. 
 
 **Step 1:** Run the conda environment setting command: 
 ```bash
@@ -140,5 +152,8 @@ tensorboard --logdir=outputs/brain_clip_adapter_000
 
 [5] Song C, Boly M, Tagliazucchi E, et al. fMRI spectral signatures of sleep[J]. Proceedings of the National Academy of Sciences, 2022, 119(30): e2016732119.
 
-[6] Olbrich S, Fischer M M, Sander C, et al. Objective markers for sleep propensity: comparison between the Multiple Sleep Latency Test and the Vigilance Algorithm Leipzig[J]. Journal of sleep research, 2015, 24(4): 450-457.
+[6] Dadi K, Varoquaux G, Machlouzarides-Shalit A, et al. Fine-grain atlases of functional modes for fMRI analysis[J]. NeuroImage, 2020, 221: 117126.
+
+[7] Olbrich S, Fischer M M, Sander C, et al. Objective markers for sleep propensity: comparison between the Multiple Sleep Latency Test and the Vigilance Algorithm Leipzig[J]. Journal of sleep research, 2015, 24(4): 450-457.
+
 <!-- GB/T 7714 -->
