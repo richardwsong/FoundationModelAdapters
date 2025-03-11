@@ -9,25 +9,25 @@ Collaborators:
 1. Yamin Li ([homepage](https://soupeeli.github.io/))
 
 ## Project Summary
-We leverage knowledge from pre-trained vision foundation models and develop adapters to extract brain patterns’ intrinsic features embedded in spectrograms.
+We leverage knowledge from pre-trained vision foundation models and develop adapters to extract brain patterns' intrinsic features embedded in spectrograms.
 
 ## Project Description
-*Topic:* Leveraging foundation models’ pre-trained knowledge to conduct spectrogram analysis of EEG and fMRI resting state data of healthy subjects.
+*Topic:* Leveraging foundation models' pre-trained knowledge to conduct spectrogram analysis of EEG and fMRI resting state data of healthy subjects.
 
 *Objective:* Differentiate drowsy and alertness states based on EEG and fMRI spectrogram features.
 
-*Potential Contribution:* Adapt foundation models’ robust, pre-trained knowledge of the brain-imaging domain can potentially generate high-quality latent space with good discriminability among subjects and brain states.
+*Potential Contribution:* Adapt foundation models' robust, pre-trained knowledge of the brain-imaging domain can potentially generate high-quality latent space with good discriminability among subjects and brain states.
 
 *Get Started:* Download the sample code and data. Follow the tutorial in this readme file to set up environments and run the basic pipeline. Integrate foundation models for feature extraction. Visualization and analysis.
 
-*Key Resources:* Background theory: foundation models’ official tutorials, vision detection models. Implementation: PyTorch documentations. ChatGPT is your good friend if you use it wisely!
+*Key Resources:* Background theory: foundation models' official tutorials, vision detection models. Implementation: PyTorch documentations. ChatGPT is your good friend if you use it wisely!
 
 ## Goals for the BrainHack Global
 1. Get a basic understanding of brain imaging spectrograms (not computationally intensive).
     a. Understand how brain imaging spectrograms are generated.
     b. Understand the differences between EEG and fMRI spectrograms, as well as the pros and cons of these two modalities.
     c. Differentiate drowsy and alert states from EEG and fMRI spectrograms manually, and think about what might contribute to the differences in latent space.
-2. Compare different foundation models’ abilities in capturing brain images’ intrinsic information and the quality of latent space (GPU preferred; CPU with a large memory is also fine!).
+2. Compare different foundation models' abilities in capturing brain images' intrinsic information and the quality of latent space (GPU preferred; CPU with a large memory is also fine!).
     a. Experiment with the CLIP feature extractor in the sample code.
     b. Integrate visual foundation models with open-source checkpoints/APIs (e.g. DALL-E, SAM) as feature extractors.
     c. Visualize the features with UMAP (sample code provided) or other methods.
@@ -83,14 +83,38 @@ Binary groundtruth is generated in a sliding-window manner with window size 30, 
 Modes atlas [6]. Brain states ground truth is computed via the VIGALL algorithm [7]. Ground truth label in dataloader: eeg_index. 
 
 
-## Environment Configs, Training and Testing the Model, Visualization
-**Step 0:** Download the data and change the data loading path. Open a terminal and enter the working folder. 
+## Environment Setup and Running the Model
 
-**Step 1:** Run the conda environment setting command: 
+**Step 0:** Download the data and change the data loading path. Open a terminal and enter the working folder.
+
+**Step 1:** Install uv and set up the environment:
+
+First, install uv (if not already installed):
+
 ```bash
-bash enviro_configs/enviro_config.sh 
-conda activate brain_clip_adapter
+# For macOS/Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# For Windows (using PowerShell)
+irm https://astral.sh/uv/install.ps1 | iex
 ```
+
+Create a virtual environment and install dependencies:
+
+```bash
+# Create a virtual environment
+uv venv .venv
+
+# Activate the virtual environment
+# On macOS/Linux:
+source .venv/bin/activate
+# On Windows:
+.venv\Scripts\activate
+
+# Install dependencies from requirements.txt
+uv pip install -r requirements.txt
+```
+
 **Step 2:** Training. Change main.py for the GPU index and the argument '--train_device' for CPU/GPU selection.
 ```bash
 bash scripts/brain_clip_adapter_000_train.sh

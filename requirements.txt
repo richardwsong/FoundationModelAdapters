@@ -1,0 +1,15 @@
+numpy
+pandas
+nibabel
+nilearn
+mne
+torch
+tensorboard
+tensorboardx
+shap
+opencv-python
+colorcet
+umap-learn
+plotly
+torchvision
+git+https://github.com/openai/CLIP.git 
