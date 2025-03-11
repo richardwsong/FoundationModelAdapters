@@ -102,8 +102,8 @@ irm https://astral.sh/uv/install.ps1 | iex
 Create a virtual environment and install dependencies:
 
 ```bash
-# Create a virtual environment
-uv venv .venv
+# Create a virtual environment (recommended: python3.11+ for dependency issues, not mandatory)
+python3.11 -m uv venv .venv
 
 # Activate the virtual environment
 # On macOS/Linux:
