@@ -124,12 +124,30 @@ class SampleDataset(Dataset):
         eeg_spectrogram_path = glob.glob(os.path.join(self.eeg_spectrogram_dir, scan_name+"*.png"))[0]
         eeg_spectogram_img = cv2.imread(eeg_spectrogram_path)
 
-        # Read fmri spectrograms. Feel free to select spectrograms from different channels.
-        fmri_spectrogram_path = glob.glob(os.path.join(self.fmri_spectrogram_dir, scan_name+"*.png"))
-        fmri_spectrograms = cv2.imread(fmri_spectrogram_path[0])
+        # Read multiple fmri spectrograms from different ROIs
+        fmri_spectrogram_paths = glob.glob(os.path.join(self.fmri_spectrogram_dir, scan_name+"*.png"))
+        
+        # Get at least 2 fMRI spectrograms if available, otherwise duplicate the first one
+        num_rois = 2  # We can adjust this parameter later
+        fmri_spectrograms_list = []
+        
+        for i in range(min(num_rois, len(fmri_spectrogram_paths))):
+            fmri_spectrograms_list.append(cv2.imread(fmri_spectrogram_paths[i]))
+            
+        # If we don't have enough spectrograms, duplicate the first one
+        while len(fmri_spectrograms_list) < num_rois:
+            fmri_spectrograms_list.append(cv2.imread(fmri_spectrogram_paths[0]))
+            
+        # Stack the spectrograms along a new dimension
+        if num_rois > 1:
+            fmri_spectrograms = np.stack(fmri_spectrograms_list, axis=0)
+            print(f"fmri_spectrograms shape: {fmri_spectrograms.shape}")
+        else:
+            fmri_spectrograms = np.expand_dims(fmri_spectrograms_list[0], axis=0)
+            print(f"fmri_spectrograms shape: {fmri_spectrograms.shape}")
 
         ret_dict = {}
         ret_dict["eeg_index"] = eeg_index
         ret_dict["eeg_spectrogram_img"] = np.array(eeg_spectogram_img)
-        ret_dict["fmri_spectrogram_imgs"] = np.array(fmri_spectrograms)
+        ret_dict["fmri_spectrogram_imgs"] = fmri_spectrograms
         return ret_dict
