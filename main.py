@@ -65,6 +65,7 @@ def make_args_parser():
         default=None,
         help="Root directory containing the metadata files.",
     )
+    parser.add_argument("--dataset_fmri_index", default=0, type=int)
     parser.add_argument("--dataset_num_workers", default=1, type=int)
     parser.add_argument("--batchsize_per_gpu", default=4, type=int)
 

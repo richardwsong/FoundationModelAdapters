@@ -58,6 +58,7 @@ class SampleDataset(Dataset):
             self,
             dataset_config,
             split_set="train",
+            fmri_index=0,
     ):
         assert split_set in ["train", "test", "zero_shot"]
         self.dataset_config = dataset_config
@@ -66,6 +67,7 @@ class SampleDataset(Dataset):
         self.eeg_spectrogram_dir = EEG_SPECTROGRAM_DIR
         self.fmri_spectrogram_dir = FMRI_SPECTROGRAM_DIR
         self.eeg_index_source_format = EEG_INDEX_SOURCE_FORMAT
+        self.fmri_index = fmri_index
         
         all_scan_names = FMRI_PROC_SCANS
         train_scan_names = FMRI_PROC_SCANS_TRAIN
@@ -126,7 +128,7 @@ class SampleDataset(Dataset):
 
         # Read fmri spectrograms. Feel free to select spectrograms from different channels.
         fmri_spectrogram_path = glob.glob(os.path.join(self.fmri_spectrogram_dir, scan_name+"*.png"))
-        fmri_spectrograms = cv2.imread(fmri_spectrogram_path[0])
+        fmri_spectrograms = cv2.imread(fmri_spectrogram_path[self.fmri_index])
 
         ret_dict = {}
         ret_dict["eeg_index"] = eeg_index
