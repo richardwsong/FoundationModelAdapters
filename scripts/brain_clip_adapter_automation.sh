@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for FMRI_INDEX in {12..39}; do
+for FMRI_INDEX in {0..12}; do
   # Pad the index with leading zeros (e.g., 4 → 004)
   PADDED_INDEX=$(printf "%03d" $FMRI_INDEX)
   echo "Running for fMRI index: ${PADDED_INDEX}"
