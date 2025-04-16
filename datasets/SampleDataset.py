@@ -118,18 +118,21 @@ class SampleDataset(Dataset):
     
     def __getitem__(self, idx):
         scan_name = self.scan_names[idx]
-        eeg_index_path = glob.glob(os.path.join(self.eeg_index_base_dir, scan_name+self.eeg_index_source_format))
-        eeg_index = np.load(eeg_index_path[0])
+        eeg_index_path = glob.glob(os.path.join(self.eeg_index_base_dir, scan_name + self.eeg_index_source_format))
+        eeg_index = np.load(eeg_index_path[0])  # shape: (45, 1) or similar
 
-        eeg_spectrogram_path = glob.glob(os.path.join(self.eeg_spectrogram_dir, scan_name+"*.png"))[0]
-        eeg_spectogram_img = cv2.imread(eeg_spectrogram_path)
+        eeg_spectrogram_path = glob.glob(os.path.join(self.eeg_spectrogram_dir, scan_name + "*.png"))[0]
+        eeg_spectrogram_img = cv2.imread(eeg_spectrogram_path)
 
-        # Read fmri spectrograms. Feel free to select spectrograms from different channels.
-        fmri_spectrogram_path = glob.glob(os.path.join(self.fmri_spectrogram_dir, scan_name+"*.png"))
+        fmri_spectrogram_path = glob.glob(os.path.join(self.fmri_spectrogram_dir, scan_name + "*.png"))
         fmri_spectrograms = cv2.imread(fmri_spectrogram_path[0])
 
-        ret_dict = {}
-        ret_dict["eeg_index"] = eeg_index
-        ret_dict["eeg_spectrogram_img"] = np.array(eeg_spectogram_img)
-        ret_dict["fmri_spectrogram_imgs"] = np.array(fmri_spectrograms)
-        return ret_dict
+        # Add this line — compute a single label (e.g., binary: 0 or 1)
+        vigilance_label = int(np.median(eeg_index))
+
+        return {
+            "eeg_index": eeg_index,
+            "eeg_spectrogram_img": np.array(eeg_spectrogram_img),
+            "fmri_spectrogram_imgs": np.array(fmri_spectrograms),
+            "vigilance_label": vigilance_label,
+        }

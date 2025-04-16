@@ -4,7 +4,7 @@
 python main.py \
 --model_name brain_clip_adapter \
 --dataset_name SampleDataset \
---train_device gpu \
+--train_device cpu \
 --max_epoch 5 \
 --base_lr 7e-4 \
 --loss_fmri_prediction_weight 0.1 \
