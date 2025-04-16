@@ -1,0 +1,31 @@
+Training Finished.
+====================Final Eval Numbers.
+mAC: 74.81
+mAR: 63.89
+mF1: 64.41
+mPrecision: 78.04
+
+-----
+0 Accuracy: 74.81
+1 Accuracy: 74.81
+0 Recall: 31.11
+1 Recall: 96.67
+0 F1 Score: 45.16
+1 F1 Score: 83.65
+0 Precision: 82.35
+1 Precision: 73.73
+====================Best Eval Numbers.
+mAC: 74.81
+mAR: 63.89
+mF1: 64.41
+mPrecision: 78.04
+
+-----
+0 Accuracy: 74.81
+1 Accuracy: 74.81
+0 Recall: 31.11
+1 Recall: 96.67
+0 F1 Score: 45.16
+1 F1 Score: 83.65
+0 Precision: 82.35
+1 Precision: 73.73
