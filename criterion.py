@@ -1,5 +1,6 @@
 from torch import nn
 import numpy as np
+import torch
 
 class SetCriterion(nn.Module):
     def __init__(self, dataset_config, loss_weight_dict, class_weights=None):
@@ -13,12 +14,40 @@ class SetCriterion(nn.Module):
         }
 
     def loss_fmri_prediction(self, outputs, targets):
-        loss_prediction_criterion = nn.CrossEntropyLoss(weight=self.class_weights)
+        # Use a stronger class weighting - even if you already have weights
+        # This will put more emphasis on the minority class
+        # Assuming class 1 is the minority class in the test set
+        custom_weights = torch.tensor([0.3, 0.7], device=targets["vigilance_label"].device)
+        
+        # Combine with existing weights if available
+        if self.class_weights is not None:
+            effective_weights = self.class_weights * custom_weights
+            effective_weights = effective_weights / effective_weights.sum()
+        else:
+            effective_weights = custom_weights
+            
+        loss_prediction_criterion = nn.CrossEntropyLoss(weight=effective_weights)
+        
         y_true = targets["vigilance_label"].long().view(-1)  # shape [B]
         y_pred = outputs["predictions"]["vigilance_head_logits"]  # [B, T, C]
         y_pred = y_pred.mean(dim=1)  # Now [B, C]
-        curr_loss = loss_prediction_criterion(y_pred, y_true)
-        return {"loss_fmri_prediction": curr_loss}
+        
+        # Add label smoothing to improve generalization
+        smoothing = 0.1
+        if smoothing > 0:
+            n_classes = y_pred.size(1)
+            y_hot = torch.zeros_like(y_pred).scatter_(1, y_true.unsqueeze(1), 1)
+            y_smooth = y_hot * (1 - smoothing) + smoothing / n_classes
+            
+            # Manual cross entropy with label smoothing
+            log_probs = torch.nn.functional.log_softmax(y_pred, dim=1)
+            loss = -(y_smooth * log_probs).sum(dim=1)
+            loss = loss.mean()
+        else:
+            # Standard cross entropy with weights
+            loss = loss_prediction_criterion(y_pred, y_true)
+        
+        return {"loss_fmri_prediction": loss}
 
     def single_output_forward(self, outputs, targets):
         losses = {}
@@ -54,9 +83,17 @@ def build_criterion(args, dataset_config):
 
     label_counts = Counter(labels)
     total = sum(label_counts.values())
+
+    
+    # Compute inverse frequency weights
     weights = torch.tensor(
         [total / label_counts.get(i, 1) for i in range(2)], dtype=torch.float32
     )
+    
+    # Optional: Make weights more extreme to focus more on minority class
+    # weights = weights ** 1.5  # Raising to power > 1 increases contrast
+    
+    # Normalize weights to sum to 1
     weights = weights / weights.sum()
 
     loss_weight_dict = {

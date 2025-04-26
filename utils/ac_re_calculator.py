@@ -50,8 +50,25 @@ class ACRECalculator(object):
         return batch_gt
     
     def step_meter(self, outputs, targets):
+        print("=== ACRE Calculator Stepping ===")
+
+        # Get the ground truth and predictions correctly
+        print(f"Keys in outputs: {list(outputs.keys())}")
+        print(f"Keys in targets: {list(targets.keys())}")
+        
+        # If 'vigilance_head' is in outputs, print its values
+        if 'vigilance_head' in outputs:
+            print(f"Predicted labels: {outputs['vigilance_head'].flatten()[:10].tolist()}")
+        elif 'predictions' in outputs and 'vigilance_head' in outputs['predictions']:
+            print(f"Predicted labels: {outputs['predictions']['vigilance_head'].flatten()[:10].tolist()}")
+        
+        # If 'eeg_index' is in targets, print its values
+        if 'eeg_index' in targets:
+            print(f"Ground truth labels: {targets['eeg_index'].flatten()[:10].tolist()}")
+            
         if "predictions" in outputs:
             outputs = outputs["predictions"]
+            
         self.step(
             predictions=outputs,
             gt_predictions=targets,

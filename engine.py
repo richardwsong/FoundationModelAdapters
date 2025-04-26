@@ -159,6 +159,7 @@ def evaluate(
     logger,
     curr_train_iter,
 ):
+    print("Starting evaluation...")
     
     acre_calculator = ACRECalculator(
         dataset_config=dataset_config,
@@ -175,6 +176,15 @@ def evaluate(
     epoch_str = f"[{curr_epoch}/{args.max_epoch}]" if curr_epoch > 0 else ""
     
     for batch_idx, batch_data_label in enumerate(dataset_loader):
+        print(f"Evaluation batch {batch_idx}")
+        print(f"eeg_index shape: {batch_data_label['eeg_index'].shape}")
+        print(f"eeg_index values (first few): {batch_data_label['eeg_index'][:2]}")
+
+        # Check vigilance labels
+        vigilance_labels = batch_data_label.get('vigilance_label')
+        if vigilance_labels is not None:
+            print(f"vigilance_label distribution: {torch.bincount(vigilance_labels)}")
+
         curr_time = time.time()
         for key in batch_data_label:
             batch_data_label[key] = batch_data_label[key].to(net_device)
@@ -247,6 +257,12 @@ def evaluate(
             plt.title("UMAP Visualization of fmri_feats")
             plt.xlabel("UMAP Dimension 1")
             plt.ylabel("UMAP Dimension 2")
+            
+            # Show the plot immediately
+            print("\nDisplaying UMAP visualization...\n")
+            plt.show()
+            
+            # Continue with the TensorBoard logging
             buf = io.BytesIO()
             plt.savefig(buf, format='jpeg')
             buf.seek(0)
@@ -255,5 +271,4 @@ def evaluate(
             comparison_img = torch.tensor(comparison_img).permute(2, 0, 1)
             logger.log_image(comparison_img, prefix='UMAP 2d visualization of fmri_feats')
             plt.close()
-
     return acre_calculator

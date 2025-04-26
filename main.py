@@ -41,7 +41,7 @@ def make_args_parser():
         default="cbrain",
         type=str,
         help="Name of the model",
-        choices=["brain_clip_adapter"],
+        choices=["brain_clip_adapter", "brain_cnn_adapter"],
     )
 
     ##### Set Loss #####
@@ -163,7 +163,7 @@ def do_train(
         if is_primary():
             print("==" * 10)
             print(f"Epoch [{epoch}/{args.max_epoch}]; Metrics {metric_str}")
-            print("==" * 10)
+            ("==" * 10)
             logger.log_scalars(metrics_dict, curr_iter, prefix="Train/")
 
         if (
@@ -259,7 +259,7 @@ def test_model(args, model, model_no_ddp, criterion, dataset_config, dataloaders
         f"Please specify a test checkpoint using --test_ckpt. Found invalid value {args.test_ckpt}"
         sys.exit(1)
     
-    sd = torch.load(args.test_ckpt, map_location=torch.device("cpu"))
+    sd = torch.load(args.test_ckpt, map_location=torch.device("cpu"), weights_only=False)
     model_no_ddp.load_state_dict(sd["model"])
     logger = Logger(args.test_logger)
     criterion = None  # do not compute loss for speed-up; Comment out to see test loss
@@ -287,7 +287,7 @@ def zero_shot_test_model(args, model, model_no_ddp, criterion, dataset_config, d
         f"Please specify a test checkpoint using --test_ckpt. Found invalid value {args.test_ckpt}"
         sys.exit(1)
     
-    sd = torch.load(args.test_ckpt, map_location=torch.device("cpu"))
+    sd = torch.load(args.test_ckpt, map_location=torch.device("cpu"), weights_only=False)
     model_no_ddp.load_state_dict(sd["model"])
     logger = Logger(args.test_logger)
     criterion = None  # do not compute loss for speed-up; Comment out to see test loss

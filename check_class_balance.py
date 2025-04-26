@@ -23,5 +23,3 @@ for item in dataset:
     # For example, if it's binary classification and label is the last EEG index:
     label = int(item["eeg_index"][-1][0])
     labels.append(label)
-
-print("Class distribution:", Counter(labels))
